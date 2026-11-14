@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string[] monthNames =
+        {
+            "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+        };
+
+        Dictionary<string, int[]> temperature = new Dictionary<string, int[]>();
+        Random random = new Random();
+
+        foreach (string month in monthNames)
+        {
+            int[] days = new int[30];
+            for (int day = 0; day < 30; day++)
+            {
+                days[day] = random.Next(-30, 36);
+            }
+            temperature[month] = days;
+        }
+
+        Dictionary<string, double> averages = CalculateAverageTemperatures(temperature);
+
+        Console.WriteLine("Средняя температура по месяцам:");
+        foreach (string month in monthNames)
+        {
+            Console.WriteLine($"{month,-10}: {averages[month],6:F2}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Отсортированные средние температуры по возрастанию:");
+
+        var sorted = averages.OrderBy(pair => pair.Value).ToList();
+
+        foreach (var pair in sorted)
+        {
+            Console.WriteLine($"{pair.Key,-10}: {pair.Value,6:F2}");
+        }
+
+        Console.ReadLine();
+    }
+
+    static Dictionary<string, double> CalculateAverageTemperatures(
+        Dictionary<string, int[]> temperature)
+    {
+        Dictionary<string, double> averages = new Dictionary<string, double>();
+
+        foreach (var pair in temperature)
+        {
+            int sum = 0;
+            foreach (int value in pair.Value)
+            {
+                sum += value;
+            }
+            averages[pair.Key] = (double)sum / pair.Value.Length;
+        }
+
+        return averages;
+    }
+}
